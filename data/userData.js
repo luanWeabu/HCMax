@@ -1,0 +1,66 @@
+let userData = [
+  {
+    id: 1,
+    name: "John Doe",
+    role: "user",
+    email: "johndoe@example.com",
+    password: "password123",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    role: "admin",
+    email: "janesmith@example.com",
+    password: "admin123",
+  },
+  {
+    id: 3,
+    name: "Michael Johnson",
+    role: "user",
+    email: "michaeljohnson@example.com",
+    password: "pass123",
+  },
+  {
+    id: 4,
+    name: "Emily Brown",
+    role: "user",
+    email: "emilybrown@example.com",
+    password: "password456",
+  },
+  {
+    id: 5,
+    name: "David Wilson",
+    role: "admin",
+    email: "davidwilson@example.com",
+    password: "admin456",
+  },
+  {
+    id: 6,
+    name: "Sarah Davis",
+    role: "user",
+    email: "sarahdavis@example.com",
+    password: "pass789",
+  },
+  {
+    id: 7,
+    name: "Daniel Taylor",
+    role: "user",
+    email: "danieltaylor@example.com",
+    password: "password789",
+  },
+  {
+    id: 8,
+    name: "Olivia Anderson",
+    role: "admin",
+    email: "oliviaanderson@example.com",
+    password: "admin789",
+  },
+  {
+    id: 9,
+    name: "James Johnson",
+    role: "user",
+    email: "jamesjohnson@example.com",
+    password: "pass789",
+  },
+];
+module.exports = { userData };
