@@ -14,8 +14,7 @@ async function getUser(req, res) {
   try {
     let { page } = req.query || 1;
     let { size } = req.query || 10;
-    let { name, email } = req.query || "";
-    let { role } = req.query || "";
+    let { search } = req.query || "";
 
     let start = (page - 1) * size;
     let end = start + size;
@@ -28,14 +27,12 @@ async function getUser(req, res) {
     );
     let items = DTOs.slice(start, end);
     let searchingItems = items.filter((item) => {
-      if (role) {
-        return item.role.toLowerCase() === role.toLowerCase();
-      }
-      if (name) {
-        return item.name.toLowerCase().includes(name.toLowerCase());
-      }
-      if (email) {
-        return item.email.toLowerCase().includes(email.toLowerCase());
+      if (search) {
+        return (
+          item.role.toLowerCase() === search.toLowerCase() ||
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.email.toLowerCase().includes(search.toLowerCase())
+        );
       }
       return item;
     });
@@ -103,17 +100,18 @@ function getUserById(req, res) {
 async function handleUpdateUserById(req, res) {
   try {
     const { id } = req.params;
+    const { name, role, email } = req.body;
     const userById = userData.find((item) => Number(id) === item.id);
-    const { name, role, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
     if (id) {
       userById.name = name;
-      userById.email = email;
       userById.role = role;
-      userById.password = hashedPassword;
+      userById.email = email;
     }
-    userData.push(...item, userById);
-    res.status(200).json({ messages: "Edit Succesfully", userById, userData });
+    res.status(200).json({
+      messages: "Edit Succesfully",
+      userById,
+      userData,
+    });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -126,9 +124,10 @@ async function handleUpdateUserById(req, res) {
 function handleDeleteUserById(req, res) {
   try {
     const { id } = req.params;
-    userData = userData.filter((item) => Number(id) !== item.id);
+    const findUserById = userData.find((item) => Number(id) === item.id);
+    userData.splice(userData.indexOf(findUserById), 1);
 
-    res.status(200).send({ message: "Delete Succefully" });
+    res.status(200).send({ message: "Delete Succefully", userData });
   } catch (error) {
     res.status(500).send({ error });
   }
