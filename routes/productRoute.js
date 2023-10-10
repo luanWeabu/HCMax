@@ -1,8 +1,10 @@
-const bcrypt = require("bcrypt");
 const { productData } = require("../data/productData");
 const { categoryData } = require("../data/categoryData");
-const { format } = require("date-fns");
-const { generateTimestamp } = require("../datetime/datetime");
+const {
+  ERROR_MESSAGE,
+  RESOLVE_MESSAGE,
+} = require("../constants/message.constant");
+const { deleteVariantsByProductId } = require("./variantRoute");
 
 function getProducts(req, res) {
   handleRequest(() => {
@@ -53,7 +55,7 @@ function getProductById(req, res) {
     const { id } = req.params;
     const productById = productData.find((item) => item.id === Number(id));
     if (!productById) {
-      res.status(404).json({ message: "Product not found" });
+      res.status(404).json({ message: ERROR_MESSAGE.PRODUCT_NOT_FOUND });
     }
     res.status(200).json(productById);
   }, res);
@@ -67,7 +69,7 @@ function createProduct(req, res) {
       (item) => item.id === categoryId
     );
     if (categoryIndex === -1) {
-      res.status(404).json({ message: "Category not found" });
+      res.status(404).json({ message: ERROR_MESSAGE.CATEGORY_NOT_FOUND });
     }
 
     const id = Date.now();
@@ -91,7 +93,7 @@ function updateProductById(req, res) {
       (item) => item.id === categoryId
     );
     if (categoryIndex === -1) {
-      res.status(404).json({ message: "Category not found" });
+      res.status(404).json({ message: ERROR_MESSAGE.CATEGORY_NOT_FOUND });
     }
 
     // validate productId
@@ -99,16 +101,13 @@ function updateProductById(req, res) {
       (item) => item.id === Number(id)
     );
     if (productIndex === -1) {
-      res.status(404).json({ message: "Product not found" });
+      res.status(404).json({ message: ERROR_MESSAGE.PRODUCT_NOT_FOUND });
     }
 
-    const timestamp = generateTimestamp();
-    const formattedDate = format(timestamp, "yyyy-MM-dd'T'HH:mm:ss");
     productData[productIndex] = {
       ...productData[productIndex],
       name,
       categoryId,
-      updatedAt: formattedDate,
     };
     res.status(200).json({ productData });
   }, res);
@@ -121,10 +120,14 @@ function deleteProductById(req, res) {
       (item) => item.id === Number(id)
     );
     if (productIndex === -1) {
-      res.status(404).json({ message: "Product not found" });
+      res.status(404).json({ message: ERROR_MESSAGE.PRODUCT_NOT_FOUND });
     }
     productData.splice(productIndex, 1);
-    res.status(200).json({ message: "Delete Successfully" });
+
+    // delete variants by productId
+    deleteVariantsByProductId(id);
+
+    res.status(200).json({ message: RESOLVE_MESSAGE.DELETE_PRODUCT_SUCCESS });
   }, res);
 }
 
@@ -133,7 +136,7 @@ const handleRequest = (callBack, res) => {
     callBack();
   } catch (err) {
     res.status(400).json({
-      message: "Something went wrong",
+      message: ERROR_MESSAGE.SOMETHING_WENT_WRONG,
     });
   }
 };
