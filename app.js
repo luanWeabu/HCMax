@@ -10,7 +10,13 @@ const {
   getUserById,
 } = require("./routes/userRoute");
 const { handleLogin, handleRefreshToken } = require("./auth/login");
-const { getProductById, createProduct } = require("./routes/productRoute");
+const {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProductById,
+  deleteProductById,
+} = require("./routes/productRoute");
 const { generateTimestamp } = require("./datetime/datetime");
 const { format } = require("date-fns");
 require("dotenv").config();
@@ -33,7 +39,7 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 /*
-1.CRUD User 
+1.CRUD User
 */
 app.get("/users", authenticateToken, getUser);
 app.post("/users", authenticateToken, handleCreateUser);
@@ -41,13 +47,13 @@ app.put("/users/:id", authenticateToken, handleUpdateUserById);
 app.get("/users/:id", authenticateToken, getUserById);
 app.delete("/users/:id", authenticateToken, handleDeleteUserById);
 /*
-2.CRUD Product 
+2.CRUD Product
 */
-app.get("/products", authenticateToken, (req, res) => {
-  res.send(productData);
-});
+app.get("/products", authenticateToken, getProducts);
 app.get("/products/:id", authenticateToken, getProductById);
 app.post("/products", authenticateToken, createProduct);
+app.put("/products/:id", authenticateToken, updateProductById);
+app.delete("/products/:id", authenticateToken, deleteProductById);
 /*
 1.login
 2.hadleLogin Logic processing at handle Logic when the user logs in will return a refreshtoken and use this token to access, view, edit, and delete data.
