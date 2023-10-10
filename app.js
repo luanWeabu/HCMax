@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const { productData } = require("./data/productData");
 const { authenticateToken } = require("./auth/authToken");
 const {
   handleCreateUser,
@@ -17,8 +16,13 @@ const {
   updateProductById,
   deleteProductById,
 } = require("./routes/productRoute");
-const { generateTimestamp } = require("./datetime/datetime");
-const { format } = require("date-fns");
+const {
+  getVariants,
+  getVariantById,
+  createVariant,
+  updateVariant,
+  deleteVariant,
+} = require("./routes/variantRoute");
 require("dotenv").config();
 
 //port
@@ -54,6 +58,16 @@ app.get("/products/:id", authenticateToken, getProductById);
 app.post("/products", authenticateToken, createProduct);
 app.put("/products/:id", authenticateToken, updateProductById);
 app.delete("/products/:id", authenticateToken, deleteProductById);
+
+/**
+ * 3. CRUD variant
+ */
+app.get("/variants", authenticateToken, getVariants);
+app.get("/variants/:id", authenticateToken, getVariantById);
+app.post("/variants", authenticateToken, createVariant);
+app.put("/variants/:id", authenticateToken, updateVariant);
+app.delete("/variants/:id", authenticateToken, deleteVariant);
+
 /*
 1.login
 2.hadleLogin Logic processing at handle Logic when the user logs in will return a refreshtoken and use this token to access, view, edit, and delete data.
